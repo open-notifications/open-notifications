@@ -14,6 +14,18 @@ The goal of this repository is to propose a standard or specification for notifi
 * Messaging (Facebook, Whatsapp, Telegram, Threema, Signal)
 * Webhooks
 
+### Example Provider
+
+This document uses telegram as an example provider, because it has the most complicated use case:
+
+1. Developer registers a bot in telegram.
+2. Developer registers a provider using the bot name and secret.
+3. Provider registers the webook.
+4. End user contacts the bot.
+5. Provider has to answer with a welcome message (need to be stored somewhere).
+6. Provider checks whether the user is known and stores the chat_id for the user.
+7. Provider sends the notification usign the chat id from the user.
+
 ### General architecture
 
 The architecture is very simple:
@@ -399,3 +411,5 @@ POST /store_value
 ```
 
 Because notifo and novu use a multi-tenant approach we have to consider that. An easy solution would be to include the tenant ID and provider name to all requests. But this would cause serious issues. The provider could store a value in the wrong tenant, either by purpose or by accident. So it is up to the host service to ensure that the tenant cannot write values to the wrong account. For example by storing the tenant ID into a JWT token. Of course this is still no guarantee.
+
+This needs to be discussed.
