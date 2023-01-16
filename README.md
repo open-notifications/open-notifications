@@ -24,7 +24,7 @@ This document uses telegram as an example provider, because it has the most comp
 4. End user contacts the bot.
 5. Provider has to answer with a welcome message (need to be stored somewhere).
 6. Provider checks whether the user is known and stores the chat_id for the user.
-7. Provider sends the notification usign the chat id from the user.
+7. Provider sends the notification using the chat id from the user.
 
 ### General architecture
 
@@ -62,6 +62,7 @@ The request from the host to the provider service has the following signature:
         "authHeaders": {
             "ApiKey": "KEY"
         },
+        "trusted": true,
         "tenantId": "...",
         "userId": "...",
     },
@@ -77,6 +78,10 @@ With each request, the host sends the current URL and the authentication headers
 
 Furthermore a tenant ID is provided here (more about this later).
 
+### Trusted Provider Services
+
+Notifo and Novu use a multi-tenant approach. Therefore the provider would receive credentials for multiple tenants. This can cause functional or even security issues, because a provider could just store all credentials and call an API with the wrong credentials. Either by purpose or by accident. The set of API methods is very restricted, but it is still a risk that needs to be handled. Therefore the host service should manage a list of trusted services and only expose the API key to these provider services.
+
 ### OTLP
 
 Provider services should support the open telemetry protokoll.
@@ -90,7 +95,7 @@ Because provider services can implement multiple providers, this endpoint is use
 ```
 POST /get_providers
 {
-    "contexT": {
+    "context": {
         ...
     },
     "payload": null
@@ -244,6 +249,7 @@ POST /send
             "message": "Hello World"
         },
         "notificationId": "...",
+        "trackingToken": "...",
         "webhookUrl": "..."
     }
 }
@@ -311,8 +317,7 @@ Updates the status of a notification
 ```
 POST /send_update
 {
-    "notificationId": "...",
-    "channel": "tgelegram",
+    "trackingToken": "...",
     "result": {
         "status": "Sent | Delivered | Failed",
         "errors": [{
@@ -323,7 +328,7 @@ POST /send_update
 }
 ```
 
-### POST /get_users and POST /update_users/{id}
+### Trusted: POST /get_users and POST /update_users/{id}
 
 Provides a user by a provider property or prebuilt property:
 
@@ -336,7 +341,8 @@ POST /get_user
 {
     "provider: "telegram",
     "propertyName": "username",
-    "propertyValue:" "John_Doe"
+    "propertyValue:" "John_Doe",
+    "tenantId": "..."
 }
 
 // Returns
@@ -361,6 +367,7 @@ The provider service can update a user property
 POST /users
 {
     "provider": telegram",
+    "tenantId": "...",
     "userId": "444",
     "properties": {
         "chat_id": "123123"
@@ -370,13 +377,16 @@ POST /users
 
 // Status: 204 (tbd)
 
-### POST /get_value and POST /store_value/{key}
+### Trusted: POST /get_value and POST /store_value/{key}
 
-The provider host provides a simple key-value store.
+The provider host provides a simple key-value store. The goal is that the provider service can be stateless. This is not possible in all cases, though. When the provider service uses an messaging telemetry like MQTT, he has to maintain a stable connection with the provider itself. Then there is no entry point for the host service to provide the credentials.
+
+It has been considered to add a registration process to the host service. The provider service would register itself at the host and provide the current URL. If the URL is a registered provider service, the host service would send the credentials to this URL. Unfortunately this does not work with a load balancer.
 
 ```
 POST /get_value
 {
+    "tenantId": "...",
     "key": "My-Key",
     "scope": "Tenant | User"
 }
@@ -394,6 +404,7 @@ POST /get_value
 ```
 POST /store_value
 {
+    "tenantId": "...",
     "key": "My-Key",
     "value": "Update",
     "replace": false,
@@ -409,7 +420,3 @@ POST /store_value
     }
 }
 ```
-
-Because notifo and novu use a multi-tenant approach we have to consider that. An easy solution would be to include the tenant ID and provider name to all requests. But this would cause serious issues. The provider could store a value in the wrong tenant, either by purpose or by accident. So it is up to the host service to ensure that the tenant cannot write values to the wrong account. For example by storing the tenant ID into a JWT token. Of course this is still no guarantee.
-
-This needs to be discussed.
