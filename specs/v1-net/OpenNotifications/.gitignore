@@ -1,0 +1,11 @@
+bin
+obj
+
+launchSettings.json
+
+appsettings.Development.json
+appsettings.Production.json
+
+*.user
+
+.vs
