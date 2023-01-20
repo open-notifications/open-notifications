@@ -84,7 +84,7 @@ Notifo and Novu use a multi-tenant approach. Therefore the provider would receiv
 
 ### OTLP
 
-Provider services should support the open telemetry protokoll.
+Provider services should support the open telemetry protocol.
 
 ## Endpoints
 
