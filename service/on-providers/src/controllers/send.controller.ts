@@ -1,17 +1,31 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { SendEmailDto } from 'src/dtos';
+import { Body, Controller, Post } from '@nestjs/common';
+import { SendEmailDto, SendResponseDto } from 'src/dtos';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProvidersService } from 'src/services/providers.service';
 
 @Controller('send')
+@ApiTags('providers')
 export class SendController {
   constructor(private readonly providers: ProvidersService) {}
 
   @Post('email')
+  @ApiOperation({ summary: 'Send an email message.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Email message sent.',
+    type: SendResponseDto,
+  })
   sendEmail(@Body() request: SendEmailDto) {
     return this.providers.sendEmail(request);
   }
 
   @Post('sms')
+  @ApiOperation({ summary: 'Send an Sms message.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Sms sent sent.',
+    type: SendResponseDto,
+  })
   sendSms(@Body() request: SendEmailDto) {
     return this.providers.sendEmail(request);
   }

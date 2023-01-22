@@ -10,9 +10,6 @@ export class SmtpProvider implements Provider {
     description: {
       en: 'Send Emails using any SMPT email server',
     },
-    logo: {
-      svg: '<svg',
-    },
     type: 'Email',
     properties: {
       serverHost: {
