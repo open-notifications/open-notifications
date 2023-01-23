@@ -2,10 +2,12 @@ import {
   IsArray,
   IsBoolean,
   IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
+  IsString,
 } from 'class-validator';
 import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 
@@ -14,22 +16,35 @@ export type LocalizedString = { [languageCode: string]: string };
 export type PropertyValue = string | boolean | number | null;
 export type PropertyValues = { [key: string]: PropertyValue };
 
-export type ProviderType = 'Email' | 'SMS';
+export enum ProviderType {
+  EMAIL = 'email',
+  SMS = 'sms',
+}
 
-export type PropertyType =
-  | 'String'
-  | 'Text'
-  | 'Password'
-  | 'Boolean'
-  | 'Url'
-  | 'Number';
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+  DELETE = 'delete',
+}
 
-export type NotificationStatus =
-  | 'Pending'
-  | 'Sent'
-  | 'Delivered'
-  | 'Failed'
-  | 'Unknown';
+export enum PropertyType {
+  BOOLEAN = 'boolean',
+  NUMBER = 'number',
+  PASSWORD = 'password',
+  STRING = 'string',
+  TEXT = 'text',
+  URL = 'url',
+}
+
+export enum NotificationStatus {
+  DELIVERED = 'delivered',
+  FAILED = 'failed',
+  PENDING = 'pending',
+  SENT = 'sent',
+  UNKNOWN = 'unknown',
+}
 
 export class RequestContextDto {
   @ApiProperty()
@@ -60,7 +75,7 @@ export class BaseRequestDto {
   context: RequestContextDto;
 }
 
-export class GetProvidersRequest extends BaseRequestDto {
+export class GetProvidersRequestDto extends BaseRequestDto {
   // Empty
 }
 
@@ -78,9 +93,10 @@ export class PropertyInfoDto {
   description: LocalizedString;
 
   @ApiProperty({
-    enum: ['String', 'Text', 'Password', 'Boolean', 'Url', 'Number'],
+    enum: PropertyType,
   })
-  @IsObject()
+  @IsDefined()
+  @IsEnum(PropertyType)
   type: PropertyType;
 
   @ApiProperty()
@@ -137,8 +153,11 @@ export class ProviderInfoDto {
   @IsObject()
   logoRaster?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({
+    enum: ProviderType,
+  })
+  @IsDefined()
+  @IsEnum(ProviderType)
   type: ProviderType;
 
   @ApiProperty({
@@ -156,7 +175,7 @@ export class ProviderInfoDto {
 }
 
 @ApiExtraModels(ProviderInfoDto)
-export class GetProvidersResponse {
+export class GetProvidersResponseDto {
   @ApiProperty({
     additionalProperties: { $ref: getSchemaPath(ProviderInfoDto) },
   })
@@ -244,7 +263,7 @@ export class EmailPayloadDto {
   bodyHtml?: string;
 }
 
-export class SendEmailDto extends SendRequestDto<EmailPayloadDto> {
+export class SendEmailRequestDto extends SendRequestDto<EmailPayloadDto> {
   // Empty
 }
 
@@ -258,12 +277,68 @@ export class SmsPayloadDto {
   text: string;
 }
 
-export class SendSmsDto extends SendRequestDto<SmsPayloadDto> {
+export class SendSmsRequestDto extends SendRequestDto<SmsPayloadDto> {
   // Empty
 }
 
 export class SendResponseDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   status: NotificationStatus;
+}
+
+export class WebhookRequestDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  provider: string;
+
+  @IsDefined()
+  @IsEnum(HttpMethod)
+  method: HttpMethod;
+
+  @ApiProperty({
+    additionalProperties: { type: 'string' },
+  })
+  @IsDefined()
+  @IsObject()
+  query: { [key: string]: string[] };
+
+  @ApiProperty({
+    additionalProperties: { type: 'array', items: { type: 'string' } },
+  })
+  @IsDefined()
+  @IsObject()
+  headers: { [key: string]: string };
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  body?: string;
+}
+
+export class WebhookResponseDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  http?: WebhookHttpResponseDto;
+}
+
+export class WebhookHttpResponseDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsNumber()
+  statusCode: number;
+
+  @ApiProperty({
+    additionalProperties: { type: 'array', items: { type: 'string' } },
+  })
+  @IsOptional()
+  @IsObject()
+  headers?: { [key: string]: string };
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  body?: string;
 }

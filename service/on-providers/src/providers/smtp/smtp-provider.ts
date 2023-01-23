@@ -1,9 +1,11 @@
 import {
   ProviderInfoDto,
-  SendEmailDto,
+  SendEmailRequestDto,
   NotificationStatus,
   InstallationRequestDto,
   EmailPayloadDto,
+  ProviderType,
+  PropertyType,
 } from 'src/dtos';
 import { Provider } from '../interface';
 import * as nodemailer from 'nodemailer';
@@ -16,10 +18,10 @@ export class SmtpProvider implements Provider {
     description: {
       en: 'Send Emails using any SMPT email server',
     },
-    type: 'Email',
+    type: ProviderType.EMAIL,
     properties: {
       serverHost: {
-        type: 'String',
+        type: PropertyType.STRING,
         displayName: {
           en: 'Host',
         },
@@ -29,7 +31,7 @@ export class SmtpProvider implements Provider {
         required: true,
       },
       serverPort: {
-        type: 'Number',
+        type: PropertyType.NUMBER,
         displayName: {
           en: 'Port',
         },
@@ -39,7 +41,7 @@ export class SmtpProvider implements Provider {
         defaultValue: 587,
       },
       username: {
-        type: 'String',
+        type: PropertyType.STRING,
         displayName: {
           en: 'Username',
         },
@@ -48,7 +50,7 @@ export class SmtpProvider implements Provider {
         },
       },
       password: {
-        type: 'Password',
+        type: PropertyType.PASSWORD,
         displayName: {
           en: 'Password',
         },
@@ -57,7 +59,7 @@ export class SmtpProvider implements Provider {
         },
       },
       fromEmail: {
-        type: 'String',
+        type: PropertyType.STRING,
         displayName: {
           en: 'From Email',
         },
@@ -66,7 +68,7 @@ export class SmtpProvider implements Provider {
         },
       },
       fromName: {
-        type: 'String',
+        type: PropertyType.STRING,
         displayName: {
           en: 'From Name.',
         },
@@ -90,7 +92,7 @@ export class SmtpProvider implements Provider {
     });
   }
 
-  sendEmail?(request: SendEmailDto): Promise<NotificationStatus> {
+  sendEmail?(request: SendEmailRequestDto): Promise<NotificationStatus> {
     return this.sendEmailTo(request.properties, request.payload);
   }
 
@@ -139,18 +141,18 @@ export class SmtpProvider implements Provider {
       });
 
       if (info.accepted.find((x) => x === to || x['address'] === to)) {
-        return 'Sent';
+        return NotificationStatus.SENT;
       }
 
       if (info.rejected.find((x) => x === to || x['address'] === to)) {
-        return 'Failed';
+        return NotificationStatus.FAILED;
       }
 
       if (info.pending.find((x) => x === to || x['address'] === to)) {
-        return 'Pending';
+        return NotificationStatus.PENDING;
       }
 
-      return 'Unknown';
+      return NotificationStatus.UNKNOWN;
     } finally {
       transport.close?.();
     }

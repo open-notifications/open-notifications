@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { SendEmailDto, SendResponseDto } from 'src/dtos';
+import { SendEmailRequestDto, SendResponseDto } from 'src/dtos';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProvidersService } from 'src/services/providers.service';
 
@@ -15,7 +15,7 @@ export class SendController {
     description: 'Email message sent.',
     type: SendResponseDto,
   })
-  sendEmail(@Body() request: SendEmailDto) {
+  sendEmail(@Body() request: SendEmailRequestDto) {
     return this.providers.sendEmail(request);
   }
 
@@ -26,7 +26,7 @@ export class SendController {
     description: 'Sms sent sent.',
     type: SendResponseDto,
   })
-  sendSms(@Body() request: SendEmailDto) {
+  sendSms(@Body() request: SendEmailRequestDto) {
     return this.providers.sendEmail(request);
   }
 }

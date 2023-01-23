@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import {
-  GetProvidersRequest,
-  GetProvidersResponse,
+  GetProvidersRequestDto,
+  GetProvidersResponseDto,
   InstallationRequestDto,
 } from 'src/dtos';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
@@ -17,9 +17,9 @@ export class ProvidersController {
   @ApiResponse({
     status: 200,
     description: 'Providers returned.',
-    type: GetProvidersResponse,
+    type: GetProvidersResponseDto,
   })
-  getProviders(@Body() request: GetProvidersRequest) {
+  getProviders(@Body() request: GetProvidersRequestDto) {
     return this.providers.getAllProviders(request);
   }
 

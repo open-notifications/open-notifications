@@ -1,15 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { isBoolean, isNumber, isString } from 'class-validator';
 import {
-  GetProvidersRequest,
-  GetProvidersResponse,
+  GetProvidersRequestDto,
+  GetProvidersResponseDto,
   InstallationRequestDto,
+  PropertyType,
   PropertyValues,
   ProviderType,
   RequestContextDto,
-  SendEmailDto,
+  SendEmailRequestDto,
   SendResponseDto,
-  SendSmsDto,
+  SendSmsRequestDto,
+  WebhookRequestDto,
 } from './../dtos';
 import { Provider, Providers } from './../providers';
 
@@ -23,8 +25,8 @@ export class ProvidersService {
     }
   }
 
-  getAllProviders(request: GetProvidersRequest) {
-    const result = new GetProvidersResponse();
+  getAllProviders(request: GetProvidersRequestDto) {
+    const result = new GetProvidersResponseDto();
     result.providers = {};
 
     for (const [name, provider] of Object.entries(this.providerMap)) {
@@ -52,10 +54,18 @@ export class ProvidersService {
     }
   }
 
-  async sendSms(request: SendSmsDto) {
+  async handleWebhook(request: WebhookRequestDto) {
+    const provider = this.getProvider(request.provider);
+
+    if (provider.handleWebhook) {
+      await provider.handleWebhook(request);
+    }
+  }
+
+  async sendSms(request: SendSmsRequestDto) {
     const provider = this.getProvider(request.provider);
     this.validateProperties(request.context, provider, request.properties);
-    this.validateProvider(request.context, provider, 'SMS');
+    this.validateProvider(request.context, provider, ProviderType.SMS);
 
     if (!provider.sendSms) {
       throw new Error('Provider does not implement sendSms.');
@@ -69,10 +79,10 @@ export class ProvidersService {
     return response;
   }
 
-  async sendEmail(request: SendEmailDto) {
+  async sendEmail(request: SendEmailRequestDto) {
     const provider = this.getProvider(request.provider);
     this.validateProperties(request.context, provider, request.properties);
-    this.validateProvider(request.context, provider, 'Email');
+    this.validateProvider(request.context, provider, ProviderType.EMAIL);
 
     if (!provider.sendEmail) {
       throw new Error('Provider does not implement sendEmail.');
@@ -107,7 +117,7 @@ export class ProvidersService {
   ) {
     const spec = provider.getSpec(context);
 
-    if (spec.type !== 'Email') {
+    if (spec.type !== type) {
       throw new Error(`Provider type is '${spec.type}', expected '${type}'.`);
     }
   }
@@ -135,7 +145,7 @@ export class ProvidersService {
       }
 
       switch (propertyInfo.type) {
-        case 'Number':
+        case PropertyType.NUMBER:
           if (!isNumber(value)) {
             errors.push({
               property: property,
@@ -166,7 +176,7 @@ export class ProvidersService {
 
           break;
 
-        case 'Boolean':
+        case PropertyType.BOOLEAN:
           if (!isBoolean(value)) {
             errors.push({
               property,

@@ -3,8 +3,10 @@ import {
   NotificationStatus,
   ProviderInfoDto,
   RequestContextDto,
-  SendEmailDto,
-  SendSmsDto,
+  SendEmailRequestDto,
+  SendSmsRequestDto,
+  WebhookRequestDto,
+  WebhookResponseDto,
 } from './../dtos';
 
 export interface Provider {
@@ -16,7 +18,9 @@ export interface Provider {
 
   uninstall?(request: InstallationRequestDto): Promise<any>;
 
-  sendEmail?(request: SendEmailDto): Promise<NotificationStatus>;
+  sendEmail?(request: SendEmailRequestDto): Promise<NotificationStatus>;
 
-  sendSms?(request: SendSmsDto): Promise<NotificationStatus>;
+  sendSms?(request: SendSmsRequestDto): Promise<NotificationStatus>;
+
+  handleWebhook?(request: WebhookRequestDto): Promise<WebhookResponseDto>;
 }
