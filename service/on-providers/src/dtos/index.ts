@@ -229,7 +229,7 @@ export class EmailPayloadDto {
 
   @ApiProperty()
   @IsDefined()
-  fromEmail: string;
+  fromEmail?: string;
 
   @ApiProperty()
   @IsOptional()
@@ -241,7 +241,7 @@ export class EmailPayloadDto {
 
   @ApiProperty()
   @IsOptional()
-  bodyEmail?: string;
+  bodyHtml?: string;
 }
 
 export class SendEmailDto extends SendRequestDto<EmailPayloadDto> {

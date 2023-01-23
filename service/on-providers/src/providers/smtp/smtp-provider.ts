@@ -1,4 +1,10 @@
-import { ProviderInfoDto, SendEmailDto, NotificationStatus } from 'src/dtos';
+import {
+  ProviderInfoDto,
+  SendEmailDto,
+  NotificationStatus,
+  InstallationRequestDto,
+  EmailPayloadDto,
+} from 'src/dtos';
 import { Provider } from '../interface';
 import * as nodemailer from 'nodemailer';
 
@@ -42,7 +48,7 @@ export class SmtpProvider implements Provider {
         },
       },
       password: {
-        type: 'String',
+        type: 'Password',
         displayName: {
           en: 'Password',
         },
@@ -75,7 +81,20 @@ export class SmtpProvider implements Provider {
     return this.spec;
   }
 
-  async sendEmail?(request: SendEmailDto): Promise<NotificationStatus> {
+  async install(request: InstallationRequestDto) {
+    await this.sendEmailTo(request.properties, {
+      to: 'noreply@email.com',
+      bodyHtml: undefined,
+      bodyText: 'Test Email',
+      subject: 'Test Email',
+    });
+  }
+
+  sendEmail?(request: SendEmailDto): Promise<NotificationStatus> {
+    return this.sendEmailTo(request.properties, request.payload);
+  }
+
+  private async sendEmailTo(properties: any, payload: EmailPayloadDto) {
     const {
       fromEmail,
       fromName,
@@ -90,27 +109,33 @@ export class SmtpProvider implements Provider {
       serverHost: string;
       serverPort?: number;
       username?: string;
-    } = request.properties as any;
+    } = properties;
+
+    const { bodyText, bodyHtml, subject, to } = payload;
 
     const transport = nodemailer.createTransport({
       host: serverHost,
       port: serverPort || 587,
       secure: true,
-      auth: {
-        user: username,
-        pass: password,
-      },
+      auth:
+        username && password
+          ? {
+              user: username,
+              pass: password,
+            }
+          : undefined,
     });
 
     try {
-      const to = request.payload.to;
-
       const info = await transport.sendMail({
-        from: { name: fromName, address: fromEmail },
-        to: request.payload.to,
-        subject: request.payload.subject,
-        text: request.payload.bodyText,
-        html: request.payload.bodyEmail,
+        from: {
+          name: payload.fromName || fromName,
+          address: payload.fromEmail || fromEmail,
+        },
+        to,
+        subject,
+        text: bodyText,
+        html: bodyHtml,
       });
 
       if (info.accepted.find((x) => x === to || x['address'] === to)) {
