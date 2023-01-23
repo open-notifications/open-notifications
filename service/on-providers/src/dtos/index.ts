@@ -278,7 +278,7 @@ export class SmsPayloadDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  text: string;
+  body: string;
 }
 
 export class SendSmsRequestDto extends SendRequestDto<SmsPayloadDto> {

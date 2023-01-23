@@ -8,11 +8,13 @@ import {
   WebhookResponseDto,
   NotificationStatusDto,
 } from 'src/dtos';
+import querystring from 'node:querystring';
 import { Provider } from '../interface';
-import initMB, { Message, MessageBird, MessageParameters } from 'messagebird';
+import * as twilio from 'twilio';
+import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 
-export class MessageBirdSmsProvider implements Provider {
-  name = 'messagebird-sms';
+export class TwilioSmsProvider implements Provider {
+  name = 'twilio-sms';
 
   spec: ProviderInfoDto = {
     displayName: 'Messagebird SMS',
@@ -21,17 +23,27 @@ export class MessageBirdSmsProvider implements Provider {
     },
     type: ProviderType.SMS,
     properties: {
-      accessKey: {
+      accountSid: {
         type: PropertyType.SECRET,
         displayName: {
-          en: 'Access Key',
+          en: 'Account SID',
         },
         description: {
-          en: 'The access key.',
+          en: 'Your Account SID from www.twilio.com/console.',
         },
         required: true,
       },
-      originator: {
+      authToken: {
+        type: PropertyType.SECRET,
+        displayName: {
+          en: 'AUTH Token',
+        },
+        description: {
+          en: 'Your Account SID from www.twilio.com/console.',
+        },
+        required: true,
+      },
+      from: {
         type: PropertyType.STRING,
         displayName: {
           en: 'Originator',
@@ -50,77 +62,61 @@ export class MessageBirdSmsProvider implements Provider {
 
   async sendSms(request: SendSmsRequestDto) {
     const {
-      accessKey,
-      originator,
+      accountSid,
+      authToken,
+      from,
     }: {
-      accessKey: string;
-      originator: string;
+      accountSid: string;
+      authToken: string;
+      from: string;
     } = request.properties as any;
 
-    const { to, text } = request.payload;
+    const { to, body } = request.payload;
 
-    const messagebird = initMB(accessKey);
+    const twilioInstance = twilio(accountSid, authToken);
 
-    const result = await sendAsync(messagebird, {
-      originator,
-      recipients: [to],
-      body: text,
-      reference: request.notificationId,
-      reportUrl: request.trackingWebhookUrl,
+    const result = await twilioInstance.messages.create({
+      from,
+      to,
+      body,
+      statusCallback: request.trackingWebhookUrl,
     });
 
-    const status = result.recipients.items[0].status;
+    const status = result.status;
 
     return NotificationStatusDto.status(parseStatus(status));
   }
 
   async handleWebhook(request: WebhookRequestDto) {
     const response = new WebhookResponseDto();
-    const recipient = request.query['recipient']?.[0];
 
-    if (!recipient) {
+    if (!request.body) {
       return response;
     }
 
-    const status = request.query['status']?.[0];
+    const form = querystring.parse(request.body);
+
+    const status = form['MessageStatus'];
 
     if (!status) {
       return response;
     }
 
-    response.status = NotificationStatusDto.status(
-      parseStatus(status),
-      recipient,
-    );
+    response.status = NotificationStatusDto.status(parseStatus(status as any));
     return response;
   }
 }
 
-function parseStatus(status: string) {
+function parseStatus(status: MessageStatus) {
   switch (status) {
     case 'delivered':
       return NotificationStatus.DELIVERED;
     case 'sent':
       return NotificationStatus.SENT;
-    case 'buffered':
+    case 'queued':
     case 'scheduled':
       return NotificationStatus.PENDING;
     default:
       return NotificationStatus.FAILED;
   }
-}
-
-function sendAsync(
-  messagebird: MessageBird,
-  messageParams: MessageParameters,
-): Promise<Message> {
-  return new Promise((resolve, reject) => {
-    messagebird.messages.create(messageParams, (error, response) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(response);
-      }
-    });
-  });
 }
