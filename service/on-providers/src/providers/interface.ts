@@ -1,6 +1,6 @@
 import {
   InstallationRequestDto,
-  NotificationStatus,
+  NotificationStatusDto,
   ProviderInfoDto,
   RequestContextDto,
   SendEmailRequestDto,
@@ -18,9 +18,9 @@ export interface Provider {
 
   uninstall?(request: InstallationRequestDto): Promise<any>;
 
-  sendEmail?(request: SendEmailRequestDto): Promise<NotificationStatus>;
+  sendEmail?(request: SendEmailRequestDto): Promise<NotificationStatusDto>;
 
-  sendSms?(request: SendSmsRequestDto): Promise<NotificationStatus>;
+  sendSms?(request: SendSmsRequestDto): Promise<NotificationStatusDto>;
 
   handleWebhook?(request: WebhookRequestDto): Promise<WebhookResponseDto>;
 }

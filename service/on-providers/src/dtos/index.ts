@@ -21,6 +21,10 @@ export enum ProviderType {
   SMS = 'sms',
 }
 
+export enum ErrorCode {
+  VALIDATION_ERROR = 'validation',
+}
+
 export enum HttpMethod {
   GET = 'GET',
   POST = 'POST',
@@ -32,7 +36,7 @@ export enum HttpMethod {
 export enum PropertyType {
   BOOLEAN = 'boolean',
   NUMBER = 'number',
-  PASSWORD = 'password',
+  SECRET = 'secret',
   STRING = 'string',
   TEXT = 'text',
   URL = 'url',
@@ -281,13 +285,6 @@ export class SendSmsRequestDto extends SendRequestDto<SmsPayloadDto> {
   // Empty
 }
 
-export class SendResponseDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  status: NotificationStatus;
-}
-
 export class WebhookRequestDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -322,6 +319,11 @@ export class WebhookResponseDto {
   @IsOptional()
   @IsObject()
   http?: WebhookHttpResponseDto;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  status?: NotificationStatusDto;
 }
 
 export class WebhookHttpResponseDto {
@@ -341,4 +343,51 @@ export class WebhookHttpResponseDto {
   @IsOptional()
   @IsString()
   body?: string;
+}
+
+export class ErrorDto {
+  @ApiProperty({
+    enum: ErrorCode,
+  })
+  @IsDefined()
+  @IsEnum(ErrorCode)
+  code: ErrorCode;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  message: string;
+
+  field?: string;
+}
+
+export class NotificationStatusDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  status: NotificationStatus;
+
+  @ApiProperty()
+  @IsOptional()
+  notificationId?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  errors?: ErrorDto[];
+
+  static status(status: NotificationStatus, notificationId?: string) {
+    const result = new NotificationStatusDto();
+    result.status = status;
+    result.notificationId = notificationId;
+
+    return result;
+  }
+
+  static errors(errors: ErrorDto[], notificationId?: string) {
+    const result = new NotificationStatusDto();
+    result.errors = errors;
+    result.notificationId = notificationId;
+
+    return result;
+  }
 }

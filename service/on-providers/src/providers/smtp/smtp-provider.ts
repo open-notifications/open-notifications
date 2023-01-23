@@ -6,6 +6,7 @@ import {
   EmailPayloadDto,
   ProviderType,
   PropertyType,
+  NotificationStatusDto,
 } from 'src/dtos';
 import { Provider } from '../interface';
 import * as nodemailer from 'nodemailer';
@@ -50,7 +51,7 @@ export class SmtpProvider implements Provider {
         },
       },
       password: {
-        type: PropertyType.PASSWORD,
+        type: PropertyType.SECRET,
         displayName: {
           en: 'Password',
         },
@@ -92,8 +93,10 @@ export class SmtpProvider implements Provider {
     });
   }
 
-  sendEmail?(request: SendEmailRequestDto): Promise<NotificationStatus> {
-    return this.sendEmailTo(request.properties, request.payload);
+  async sendEmail?(request: SendEmailRequestDto) {
+    const status = await this.sendEmailTo(request.properties, request.payload);
+
+    return NotificationStatusDto.status(status);
   }
 
   private async sendEmailTo(properties: any, payload: EmailPayloadDto) {

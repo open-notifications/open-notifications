@@ -9,7 +9,6 @@ import {
   ProviderType,
   RequestContextDto,
   SendEmailRequestDto,
-  SendResponseDto,
   SendSmsRequestDto,
   WebhookRequestDto,
 } from './../dtos';
@@ -62,7 +61,7 @@ export class ProvidersService {
     }
   }
 
-  async sendSms(request: SendSmsRequestDto) {
+  sendSms(request: SendSmsRequestDto) {
     const provider = this.getProvider(request.provider);
     this.validateProperties(request.context, provider, request.properties);
     this.validateProvider(request.context, provider, ProviderType.SMS);
@@ -71,12 +70,7 @@ export class ProvidersService {
       throw new Error('Provider does not implement sendSms.');
     }
 
-    const status = await provider.sendSms(request);
-
-    const response = new SendResponseDto();
-    response.status = status;
-
-    return response;
+    return provider.sendSms(request);
   }
 
   async sendEmail(request: SendEmailRequestDto) {
@@ -88,12 +82,7 @@ export class ProvidersService {
       throw new Error('Provider does not implement sendEmail.');
     }
 
-    const status = await provider.sendEmail(request);
-
-    const response = new SendResponseDto();
-    response.status = status;
-
-    return response;
+    return provider.sendEmail(request);
   }
 
   private getProvider(name: string) {
