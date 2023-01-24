@@ -4,7 +4,7 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export class SmtpProvider extends NodemailerProvider {
   name = 'smtp';
-  
+
   protected createSpec(): ProviderInfoDto {
     return {
       displayName: 'SMTP',

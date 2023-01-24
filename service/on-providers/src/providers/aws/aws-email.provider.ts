@@ -3,7 +3,7 @@ import { NodemailerProvider } from '../nodemailer/nodemailer.provider';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { SESClient, SendRawEmailCommand } from '@aws-sdk/client-ses';
 
-export class AwsEmailProvider2 extends NodemailerProvider {
+export class AwsEmailProvider extends NodemailerProvider {
   name = 'aws-email';
 
   protected createSpec(): ProviderInfoDto {
