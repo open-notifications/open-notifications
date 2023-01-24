@@ -12,9 +12,7 @@ import { Provider } from '../interface';
 import initMB, { Message, MessageBird, MessageParameters } from 'messagebird';
 
 export class MessageBirdSmsProvider implements Provider {
-  name = 'messagebird-sms';
-
-  spec: ProviderInfoDto = {
+  private readonly spec: ProviderInfoDto = {
     displayName: 'Messagebird',
     description: {
       en: 'Send SMS over Messagebird',
@@ -45,6 +43,8 @@ export class MessageBirdSmsProvider implements Provider {
       },
     },
   };
+
+  name = 'messagebird-sms';
 
   getSpec() {
     return this.spec;
