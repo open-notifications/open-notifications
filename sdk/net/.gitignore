@@ -1,0 +1,21 @@
+# User-specific files
+*.suo
+*.user
+*.vs
+*.log
+*.received.txt
+*.verified.txt.bak
+
+.vscode
+
+# Build results
+bin/
+build/
+obj/
+out/
+
+# Test Output
+_test-output/
+
+# NodeJS 
+node_modules/

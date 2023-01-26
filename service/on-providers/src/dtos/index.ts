@@ -55,7 +55,7 @@ export class RequestContextDto {
   @IsNotEmpty()
   hostUrl: string;
 
-  @ApiProperty()
+  @ApiProperty({ additionalProperties: { type: 'string' } })
   @IsOptional()
   @IsObject()
   authHeaders: { [key: string]: string };
@@ -66,7 +66,7 @@ export class RequestContextDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  teanntId: string;
+  tennantId: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -108,31 +108,31 @@ export class PropertyInfoDto {
   @IsBoolean()
   required?: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'integer', nullable: true })
   @IsOptional()
   @IsNumber()
   minLength?: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'integer', nullable: true })
   @IsOptional()
   @IsNumber()
   maxLength?: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'integer', nullable: true })
   @IsOptional()
   @IsNumber()
   minValue?: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'integer', nullable: true })
   @IsOptional()
   @IsNumber()
   maxValue?: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsOptional()
   defaultValue?: any;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsOptional()
   allowedValues?: any[];
 }
@@ -149,11 +149,11 @@ export class ProviderInfoDto {
   @IsNotEmpty()
   description: LocalizedString;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsObject()
   logoSvg?: string;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsObject()
   logoRaster?: string;
 
@@ -192,7 +192,7 @@ export class InstallationRequestDto extends BaseRequestDto {
   @IsNotEmpty()
   provider: string;
 
-  @ApiProperty()
+  @ApiProperty({ additionalProperties: { nullable: true } })
   @IsObject()
   properties: PropertyValues;
 
@@ -206,27 +206,23 @@ export class UserDto {
   @IsNotEmpty()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ additionalProperties: { nullable: true } })
   @IsObject()
   properties: PropertyValues;
 }
 
-export class SendRequestDto<T> extends BaseRequestDto {
+export class SendRequestDto extends BaseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   provider: string;
 
-  @ApiProperty()
+  @ApiProperty({ additionalProperties: { nullable: true } })
   @IsObject()
   properties: PropertyValues;
 
   @ApiProperty()
   @IsObject()
   user: UserDto;
-
-  @ApiProperty()
-  @IsObject()
-  payload: T;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -250,7 +246,7 @@ export class EmailPayloadDto {
   @IsNotEmpty()
   subject: string;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsDefined()
   fromEmail?: string;
 
@@ -258,17 +254,20 @@ export class EmailPayloadDto {
   @IsOptional()
   fromName?: string;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsOptional()
   bodyText?: string;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsOptional()
   bodyHtml?: string;
 }
 
-export class SendEmailRequestDto extends SendRequestDto<EmailPayloadDto> {
-  // Empty
+@ApiExtraModels(EmailPayloadDto)
+export class SendEmailRequestDto extends SendRequestDto {
+  @ApiProperty()
+  @IsObject()
+  payload: EmailPayloadDto;
 }
 
 export class SmsPayloadDto {
@@ -281,8 +280,11 @@ export class SmsPayloadDto {
   body: string;
 }
 
-export class SendSmsRequestDto extends SendRequestDto<SmsPayloadDto> {
-  // Empty
+@ApiExtraModels(SmsPayloadDto)
+export class SendSmsRequestDto extends SendRequestDto {
+  @ApiProperty()
+  @IsObject()
+  payload: SmsPayloadDto;
 }
 
 export class WebhookRequestDto {
@@ -308,38 +310,7 @@ export class WebhookRequestDto {
   @IsObject()
   headers: { [key: string]: string };
 
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  body?: string;
-}
-
-export class WebhookResponseDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsObject()
-  http?: WebhookHttpResponseDto;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsObject()
-  status?: NotificationStatusDto;
-}
-
-export class WebhookHttpResponseDto {
-  @ApiProperty()
-  @IsDefined()
-  @IsNumber()
-  statusCode: number;
-
-  @ApiProperty({
-    additionalProperties: { type: 'array', items: { type: 'string' } },
-  })
-  @IsOptional()
-  @IsObject()
-  headers?: { [key: string]: string };
-
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsOptional()
   @IsString()
   body?: string;
@@ -358,9 +329,20 @@ export class ErrorDto {
   @IsString()
   message: string;
 
+  @ApiProperty({ nullable: true })
   field?: string;
 }
 
+export class ApiErrorDto {
+  @ApiProperty({
+    type: 'array',
+    items: { type: getSchemaPath(ErrorDto) },
+  })
+  @IsOptional()
+  errors: ErrorDto[];
+}
+
+@ApiExtraModels(ErrorDto)
 export class NotificationStatusDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -371,7 +353,11 @@ export class NotificationStatusDto {
   @IsOptional()
   notificationId?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: 'array',
+    items: { type: getSchemaPath(ErrorDto) },
+    nullable: true,
+  })
   @IsOptional()
   errors?: ErrorDto[];
 
@@ -390,4 +376,36 @@ export class NotificationStatusDto {
 
     return result;
   }
+}
+
+export class WebhookHttpResponseDto {
+  @ApiProperty({ type: 'integer' })
+  @IsDefined()
+  @IsNumber()
+  statusCode: number;
+
+  @ApiProperty({
+    additionalProperties: { type: 'array', items: { type: 'string' } },
+    nullable: true,
+  })
+  @IsOptional()
+  @IsObject()
+  headers?: { [key: string]: string };
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsString()
+  body?: string;
+}
+
+export class WebhookResponseDto {
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsObject()
+  http?: WebhookHttpResponseDto;
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsObject()
+  status?: NotificationStatusDto;
 }

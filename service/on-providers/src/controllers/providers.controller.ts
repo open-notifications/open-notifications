@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import {
+  ApiErrorDto,
   GetProvidersRequestDto,
   GetProvidersResponseDto,
   InstallationRequestDto,
@@ -28,6 +29,11 @@ export class ProvidersController {
   @ApiResponse({
     status: 204,
     description: 'Provider installed.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Properties not valid.',
+    type: ApiErrorDto,
   })
   @HttpCode(204)
   install(@Body() request: InstallationRequestDto) {

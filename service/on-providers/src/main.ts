@@ -14,6 +14,17 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
+  // https://stackoverflow.com/questions/73655199/nestjs-swagger-how-to-add-additionalproperties-false-on-an-existing-dto-clas
+  const schemas = document?.components?.schemas;
+  Object.keys(schemas).forEach((item) => {
+    if (schemas[item]['properties']?.allowAdditional) {
+      schemas[item]['additionalProperties'] = true;
+    } else {
+      schemas[item]['additionalProperties'] = false;
+    }
+  });
+
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidationPipe());

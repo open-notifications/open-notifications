@@ -4,7 +4,7 @@ import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProvidersService } from 'src/services/providers.service';
 
 @Controller('webhook')
-@ApiTags('webhook')
+@ApiTags('providers')
 export class WebhookController {
   constructor(private readonly providers: ProvidersService) {}
 
