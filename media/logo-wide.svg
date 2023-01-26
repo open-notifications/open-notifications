@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="93.978027mm"
+   height="10.705089mm"
+   viewBox="0 0 93.978027 10.705089"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="logo-wide.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="237.4652"
+     inkscape:cy="-49.946145"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-2"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-8.162296,-129.67107)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Segoe MDL2 Assets';-inkscape-font-specification:'Segoe MDL2 Assets';letter-spacing:0px;word-spacing:0px;fill:#03a9fa;fill-opacity:1;stroke-width:0.26458332"
+       x="32.981853"
+       y="138.19954"
+       id="text4520"><tspan
+         sodipodi:role="line"
+         id="tspan4518"
+         x="32.981853"
+         y="138.19954"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#03a9fa;fill-opacity:1;stroke-width:0.26458332"><tspan
+           style="fill:#03a9fa;fill-opacity:1"
+           id="tspan4524">notifications</tspan></tspan></text>
+    <circle
+       style="fill:#ff5722;fill-opacity:1;stroke-width:0.26458332;paint-order:fill markers stroke"
+       id="path4522"
+       cx="100.39032"
+       cy="131.42107"
+       r="1.75" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Segoe MDL2 Assets';-inkscape-font-specification:'Segoe MDL2 Assets';letter-spacing:0px;word-spacing:0px;fill:#7cb342;fill-opacity:1;stroke-width:0.26458332"
+       x="7.6145258"
+       y="138.24709"
+       id="text4520-9"><tspan
+         sodipodi:role="line"
+         id="tspan4518-1"
+         x="7.6145258"
+         y="138.24709"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;fill:#7cb342;fill-opacity:1;stroke-width:0.26458332">open<tspan
+   style="fill:#7cb342;fill-opacity:1;stroke-width:0.26458332"
+   id="tspan4524-5" /></tspan></text>
+  </g>
+</svg>
