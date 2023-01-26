@@ -25,7 +25,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="logo-small.png" Pack="true" PackagePath="\" />
+    <None Include="logo-squared.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
