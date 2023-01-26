@@ -48,7 +48,7 @@ public static class Program
         var codeGenerator = new CSharpClientGenerator(document, generatorSettings);
 
         var code = codeGenerator.GenerateFile();
-        
+
         File.WriteAllText(@"..\..\..\..\OpenNotifications\Generated.cs", code);
     }
 

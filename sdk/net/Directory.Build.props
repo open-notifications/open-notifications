@@ -5,7 +5,7 @@
     <Description>ClientLibrary for Open Notifications</Description>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
-    <PackageIcon>logo-squared.png</PackageIcon>
+    <PackageIcon>logo-small.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://gibt.com/open-notifications/open-notifications</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
