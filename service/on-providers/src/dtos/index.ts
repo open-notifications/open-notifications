@@ -83,6 +83,12 @@ export class GetProvidersRequestDto extends BaseRequestDto {
   // Empty
 }
 
+export class DeprecatedDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  reason: string;
+}
+
 export class PropertyInfoDto {
   @ApiProperty({
     additionalProperties: { type: 'string' },
@@ -135,6 +141,10 @@ export class PropertyInfoDto {
   @ApiProperty({ nullable: true })
   @IsOptional()
   allowedValues?: any[];
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  isDeprecated?: DeprecatedDto;
 }
 
 @ApiExtraModels(PropertyInfoDto)
@@ -176,6 +186,10 @@ export class ProviderInfoDto {
   @IsOptional()
   @IsObject()
   userProperties?: { [name: string]: PropertyInfoDto };
+
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  isDeprecated?: DeprecatedDto;
 }
 
 @ApiExtraModels(ProviderInfoDto)
