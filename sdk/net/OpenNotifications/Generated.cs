@@ -825,7 +825,7 @@ namespace OpenNotifications
     {
         [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<object> Errors { get; set; } = new System.Collections.Generic.List<object>();
+        public System.Collections.Generic.List<ErrorDto> Errors { get; set; } = new System.Collections.Generic.List<ErrorDto>();
 
     }
 
@@ -927,14 +927,15 @@ namespace OpenNotifications
     {
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string Status { get; set; } = default!;
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public NotificationStatusDtoStatus Status { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("notificationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string NotificationId { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.List<object>? Errors { get; set; } = default!;
+        public System.Collections.Generic.List<ErrorDto>? Errors { get; set; } = default!;
 
     }
 
@@ -1083,6 +1084,27 @@ namespace OpenNotifications
 
         [System.Runtime.Serialization.EnumMember(Value = @"validation")]
         Validation = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.17.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v9.0.0.0))")]
+    public enum NotificationStatusDtoStatus
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"delivered")]
+        Delivered = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed")]
+        Failed = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"pending")]
+        Pending = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sent")]
+        Sent = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown")]
+        Unknown = 4,
 
     }
 

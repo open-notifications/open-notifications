@@ -354,7 +354,7 @@ export class ErrorDto {
 export class ApiErrorDto {
   @ApiProperty({
     type: 'array',
-    items: { type: getSchemaPath(ErrorDto) },
+    items: { $ref: getSchemaPath(ErrorDto) },
   })
   @IsOptional()
   errors: ErrorDto[];
@@ -362,7 +362,7 @@ export class ApiErrorDto {
 
 @ApiExtraModels(ErrorDto)
 export class NotificationStatusDto {
-  @ApiProperty()
+  @ApiProperty({ enum: NotificationStatus })
   @IsNotEmpty()
   @IsString()
   status: NotificationStatus;
@@ -373,7 +373,7 @@ export class NotificationStatusDto {
 
   @ApiProperty({
     type: 'array',
-    items: { type: getSchemaPath(ErrorDto) },
+    items: { $ref: getSchemaPath(ErrorDto) },
     nullable: true,
   })
   @IsOptional()
