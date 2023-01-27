@@ -315,14 +315,14 @@ export class WebhookRequestDto extends BaseRequestDto {
   method: HttpMethod;
 
   @ApiProperty({
-    additionalProperties: { type: 'string' },
+    additionalProperties: { type: 'array', items: { type: 'string' } },
   })
   @IsDefined()
   @IsObject()
   query: { [key: string]: string[] };
 
   @ApiProperty({
-    additionalProperties: { type: 'array', items: { type: 'string' } },
+    additionalProperties: { type: 'string' },
   })
   @IsDefined()
   @IsObject()
