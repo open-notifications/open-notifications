@@ -18,6 +18,11 @@ public interface IOpenNotificationsClient
     IProvidersClient Providers { get; }
 
     /// <summary>
+    /// Gets the name of the client.
+    /// </summary>
+    string Name { get; }
+
+    /// <summary>
     /// Generates a HTTP client for direct access to the service.
     /// </summary>
     /// <returns>

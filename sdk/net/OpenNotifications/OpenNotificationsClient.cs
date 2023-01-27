@@ -14,11 +14,15 @@ internal sealed class OpenNotificationsClient : IOpenNotificationsClient
 
     public IProvidersClient Providers => providers;
 
+    public string Name { get; }
+
     public OpenNotificationsClient(string name, IHttpClientFactory httpClientFactory)
     {
         factory = () => httpClientFactory.CreateClient(name);
 
         providers = new ProvidersClient(factory);
+
+        Name = name;
     }
 
     public HttpClient CreateHttpClient()
