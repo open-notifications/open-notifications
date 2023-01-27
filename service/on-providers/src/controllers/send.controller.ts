@@ -3,6 +3,7 @@ import {
   SendEmailRequestDto,
   NotificationStatusDto,
   ApiErrorDto,
+  SendSmsRequestDto,
 } from 'src/dtos';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProvidersService } from 'src/services/providers.service';
@@ -40,7 +41,7 @@ export class SendController {
     description: 'Properties not valid.',
     type: ApiErrorDto,
   })
-  sendSms(@Body() request: SendEmailRequestDto) {
-    return this.providers.sendEmail(request);
+  sendSms(@Body() request: SendSmsRequestDto) {
+    return this.providers.sendSms(request);
   }
 }

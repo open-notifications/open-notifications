@@ -301,10 +301,14 @@ export class SendSmsRequestDto extends SendRequestDto {
   payload: SmsPayloadDto;
 }
 
-export class WebhookRequestDto {
+export class WebhookRequestDto extends BaseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   provider: string;
+
+  @ApiProperty({ additionalProperties: { nullable: true } })
+  @IsObject()
+  properties: PropertyValues;
 
   @IsDefined()
   @IsEnum(HttpMethod)
