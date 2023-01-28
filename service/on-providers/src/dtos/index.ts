@@ -397,13 +397,13 @@ export class NotificationStatusDto {
 }
 
 export class WebhookHttpResponseDto {
-  @ApiProperty({ type: 'integer' })
+  @ApiProperty({ type: 'integer', nullable: true })
   @IsDefined()
   @IsNumber()
-  statusCode: number;
+  statusCode?: number;
 
   @ApiProperty({
-    additionalProperties: { type: 'array', items: { type: 'string' } },
+    additionalProperties: { type: 'string' },
     nullable: true,
   })
   @IsOptional()
