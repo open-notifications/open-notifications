@@ -12,6 +12,7 @@ import querystring from 'node:querystring';
 import { Provider } from '../interface';
 import * as twilio from 'twilio';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
+import { appendQuery } from '../utils';
 
 export class TwilioSmsProvider implements Provider {
   name = 'twilio-sms';
@@ -81,12 +82,19 @@ export class TwilioSmsProvider implements Provider {
       from,
       to,
       body,
-      statusCallback: request.trackingWebhookUrl,
+      statusCallback: appendQuery(
+        request.trackingWebhookUrl,
+        'token',
+        request.trackingToken,
+      ),
     });
 
     const status = result.status;
 
-    return NotificationStatusDto.status(parseStatus(status));
+    return NotificationStatusDto.status(
+      parseStatus(status),
+      request.trackingToken,
+    );
   }
 
   async handleWebhook(request: WebhookRequestDto) {
@@ -104,7 +112,16 @@ export class TwilioSmsProvider implements Provider {
       return response;
     }
 
-    response.status = NotificationStatusDto.status(parseStatus(status as any));
+    const token = request.query['token']?.[0];
+
+    if (!token) {
+      return response;
+    }
+
+    response.status = NotificationStatusDto.status(
+      parseStatus(status as any),
+      token,
+    );
     return response;
   }
 }

@@ -68,11 +68,15 @@ export class MessageBirdSmsProvider implements Provider {
       recipients: [to],
       body,
       reportUrl: request.trackingWebhookUrl,
+      reference: request.trackingToken,
     });
 
     const status = result.recipients.items[0].status;
 
-    return NotificationStatusDto.status(parseStatus(status));
+    return NotificationStatusDto.status(
+      parseStatus(status),
+      request.trackingToken,
+    );
   }
 
   async handleWebhook(request: WebhookRequestDto) {
@@ -84,7 +88,16 @@ export class MessageBirdSmsProvider implements Provider {
       return response;
     }
 
-    response.status = NotificationStatusDto.status(parseStatus(status));
+    const reference = request.query['reference']?.[0];
+
+    if (!reference) {
+      return response;
+    }
+
+    response.status = NotificationStatusDto.status(
+      parseStatus(status),
+      reference,
+    );
     return response;
   }
 }

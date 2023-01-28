@@ -367,9 +367,10 @@ export class NotificationStatusDto {
   @IsString()
   status: NotificationStatus;
 
+  @ApiProperty({ required: true })
   @ApiProperty()
-  @IsOptional()
-  notificationId?: string;
+  @IsNotEmpty()
+  trackingToken: string;
 
   @ApiProperty({
     type: 'array',
@@ -379,18 +380,18 @@ export class NotificationStatusDto {
   @IsOptional()
   errors?: ErrorDto[];
 
-  static status(status: NotificationStatus, notificationId?: string) {
+  static status(status: NotificationStatus, trackingToken: string) {
     const result = new NotificationStatusDto();
     result.status = status;
-    result.notificationId = notificationId;
+    result.trackingToken = trackingToken;
 
     return result;
   }
 
-  static errors(errors: ErrorDto[], notificationId?: string) {
+  static errors(errors: ErrorDto[], trackingToken: string) {
     const result = new NotificationStatusDto();
     result.errors = errors;
-    result.notificationId = notificationId;
+    result.trackingToken = trackingToken;
 
     return result;
   }

@@ -66,7 +66,7 @@ export abstract class NodemailerProvider implements Provider {
   async sendEmail?(request: SendEmailRequestDto) {
     const status = await this.sendEmailTo(request.properties, request.payload);
 
-    return NotificationStatusDto.status(status);
+    return NotificationStatusDto.status(status, request.trackingToken);
   }
 
   private async sendEmailTo(properties: any, payload: EmailPayloadDto) {
