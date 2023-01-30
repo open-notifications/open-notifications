@@ -16,7 +16,7 @@ public static class Program
 {
     public static void Main()
     {
-        var document = OpenApiDocument.FromUrlAsync("http://localhost:3000/api-json").Result;
+        var document = OpenApiDocument.FromUrlAsync("http://localhost:4500/api-json").Result;
 
         GenerateCSharp(document);
     }

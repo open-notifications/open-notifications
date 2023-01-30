@@ -12,14 +12,18 @@ import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export abstract class NodemailerProvider implements Provider {
-  private readonly spec: ProviderInfoDto;
+  private spec: ProviderInfoDto;
 
   abstract get name(): string;
 
-  constructor() {
+  getSpec() {
+    return (this.spec ||= this.createSpecCore());
+  }
+
+  private createSpecCore() {
     const spec = this.createSpec();
 
-    if (spec.properties['fromEmail']) {
+    if (!spec.properties['fromEmail']) {
       spec.properties.fromEmail = {
         type: PropertyType.STRING,
         displayName: {
@@ -28,11 +32,12 @@ export abstract class NodemailerProvider implements Provider {
         description: {
           en: 'The email-address of the sender.',
         },
+        summary: true,
       };
     }
 
-    if (spec.properties['fromName']) {
-      spec.properties.fromEmail = {
+    if (!spec.properties['fromName']) {
+      spec.properties.fromName = {
         type: PropertyType.STRING,
         displayName: {
           en: 'From Name.',
@@ -42,10 +47,8 @@ export abstract class NodemailerProvider implements Provider {
         },
       };
     }
-  }
 
-  getSpec() {
-    return this.spec;
+    return spec;
   }
 
   protected abstract createSpec(): ProviderInfoDto;

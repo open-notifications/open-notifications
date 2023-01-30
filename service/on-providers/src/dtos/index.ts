@@ -112,6 +112,11 @@ export class PropertyInfoDto {
   @ApiProperty()
   @IsOptional()
   @IsBoolean()
+  summary?: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
   required?: boolean;
 
   @ApiProperty({ type: 'integer', nullable: true })
