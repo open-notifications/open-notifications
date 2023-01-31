@@ -32,6 +32,7 @@ export abstract class NodemailerProvider implements Provider {
         description: {
           en: 'The email-address of the sender.',
         },
+        required: true,
         summary: true,
       };
     }

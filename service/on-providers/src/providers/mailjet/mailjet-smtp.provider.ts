@@ -3,13 +3,13 @@ import { NodemailerProvider } from '../nodemailer/nodemailer.provider';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export class MailjetSMTPProvider extends NodemailerProvider {
-  name = 'mailjet-smpt';
+  name = 'mailjet-smtp';
 
   protected createSpec(): ProviderInfoDto {
     return {
-      displayName: 'Mailjet SMPT',
+      displayName: 'Mailjet SMTP',
       description: {
-        en: 'Send Emails using Mailjet SMPT Server',
+        en: 'Send Emails using Mailjet SMTP Server',
       },
       type: ProviderType.EMAIL,
       logoSvg:

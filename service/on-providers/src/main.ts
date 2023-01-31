@@ -1,4 +1,8 @@
-import { ValidationError, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ValidationError,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -31,12 +35,15 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors) => {
-        const result = new ApiErrorDto();
-        result.errors = [];
+        const apiError = new ApiErrorDto();
+        apiError.code = ErrorCode.VALIDATION_ERROR;
+        apiError.details = [];
+        apiError.message = 'Validation Error';
+        apiError.statusCode = 400;
 
         function addError(error: ValidationError, path = '') {
           if (error.children?.length > 0) {
-            const childPath = `${path}.${error.property}.`;
+            const childPath = `${path}${error.property}.`;
 
             for (const child of error.children) {
               addError(child, childPath);
@@ -44,10 +51,10 @@ async function bootstrap() {
           }
 
           if (error.constraints) {
-            const field = `${path}.${error.property}`;
+            const field = `${path}${error.property}`;
 
             for (const message of Object.values(error.constraints)) {
-              result.errors.push({
+              apiError.details.push({
                 message,
                 code: ErrorCode.VALIDATION_ERROR,
                 field,
@@ -60,7 +67,7 @@ async function bootstrap() {
           addError(error);
         }
 
-        return result;
+        return new BadRequestException(apiError);
       },
     }),
   );

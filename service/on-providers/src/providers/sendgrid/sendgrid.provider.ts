@@ -9,7 +9,7 @@ export class SendGridProvider extends NodemailerProvider {
     return {
       displayName: 'Sendgrid',
       description: {
-        en: 'Send Emails using Sendgrid SMPT Server',
+        en: 'Send Emails using Sendgrid SMTP Server',
       },
       type: ProviderType.EMAIL,
       logoSvg:

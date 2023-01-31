@@ -1,6 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { isBoolean, isNumber, isString } from 'class-validator';
 import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { isBoolean, isDefined, isNumber, isString } from 'class-validator';
+import {
+  ApiErrorDto,
+  ErrorCode,
   GetProvidersRequestDto,
   GetProvidersResponseDto,
   InstallationRequestDto,
@@ -16,6 +24,7 @@ import { Provider, Providers } from './../providers';
 
 @Injectable()
 export class ProvidersService {
+  private readonly logger = new Logger(ProvidersService.name);
   private readonly providerMap: { [name: string]: Provider } = {};
 
   constructor(@Inject(Providers.provide) providers: Provider[]) {
@@ -40,7 +49,16 @@ export class ProvidersService {
     this.validateProperties(request.context, provider, request.properties);
 
     if (provider.install) {
-      await provider.install(request);
+      try {
+        await provider.install(request);
+      } catch (ex) {
+        this.logger.error('Installation failed', ex);
+
+        throw new BadRequestException({
+          message: 'Installation failed, very likely due to bad credentials',
+          statusCode: 400,
+        });
+      }
     }
   }
 
@@ -67,7 +85,10 @@ export class ProvidersService {
     this.validateProvider(request.context, provider, ProviderType.SMS);
 
     if (!provider.sendSms) {
-      throw new Error('Provider does not implement sendSms.');
+      throw new BadRequestException({
+        message: 'Provider does not implement sendSms',
+        statusCode: 400,
+      });
     }
 
     return provider.sendSms(request);
@@ -79,7 +100,10 @@ export class ProvidersService {
     this.validateProvider(request.context, provider, ProviderType.EMAIL);
 
     if (!provider.sendEmail) {
-      throw new Error('Provider does not implement sendEmail.');
+      throw new BadRequestException({
+        message: 'Provider does not implement sendEmail',
+        statusCode: 400,
+      });
     }
 
     return provider.sendEmail(request);
@@ -87,13 +111,19 @@ export class ProvidersService {
 
   private getProvider(name: string) {
     if (!name) {
-      throw new Error('Provider name cannot be undefined.');
+      throw new BadRequestException({
+        message: 'Provider name cannot be null or undefined',
+        statusCode: 400,
+      });
     }
 
     const provider = this.providerMap[name];
 
     if (!provider) {
-      throw new Error(`Cannot find provider with name '${name}'`);
+      throw new NotFoundException({
+        message: 'Provider not found',
+        statusCode: 400,
+      });
     }
 
     return provider;
@@ -107,7 +137,10 @@ export class ProvidersService {
     const spec = provider.getSpec(context);
 
     if (spec.type !== type) {
-      throw new Error(`Provider type is '${spec.type}', expected '${type}'.`);
+      throw new BadRequestException({
+        message: `Provider type is '${spec.type}', expected '${type}'.`,
+        statusCode: 400,
+      });
     }
   }
 
@@ -117,28 +150,44 @@ export class ProvidersService {
     properties: PropertyValues,
   ) {
     const spec = provider.getSpec(context);
-    const errors: { property: string; message: string }[] = [];
 
-    for (const [property, propertyInfo] of Object.entries(spec.properties)) {
-      if (propertyInfo.required && !properties[property]) {
-        errors.push({ property, message: `Property must be defined.` });
+    const apiError = new ApiErrorDto();
+    apiError.code = ErrorCode.VALIDATION_ERROR;
+    apiError.details = [];
+    apiError.message = 'Validation Error';
+    apiError.statusCode = 400;
+
+    for (const [field, propertyInfo] of Object.entries(spec.properties)) {
+      const value = properties[field];
+
+      if (propertyInfo.required && !isDefined(value)) {
+        apiError.details.push({
+          code: ErrorCode.PROPERTY_NOT_DEFINED,
+          field,
+          message: `${field} should not be null or undefined`,
+        });
       }
     }
 
-    for (const [property, value] of Object.entries(properties)) {
-      const propertyInfo = spec.properties[property];
+    for (const [field, value] of Object.entries(properties)) {
+      const propertyInfo = spec.properties[field];
 
       if (!propertyInfo) {
-        errors.push({ property: property, message: 'Unknown property.' });
+        apiError.details.push({
+          code: ErrorCode.PROPERTY_NOT_KNOWN,
+          field,
+          message: `${field} is not a known property`,
+        });
         continue;
       }
 
       switch (propertyInfo.type) {
         case PropertyType.NUMBER:
           if (!isNumber(value)) {
-            errors.push({
-              property: property,
-              message: `Expected Number, got '${typeof value}'`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_TYPE_MISMATCH,
+              field,
+              message: `${field} must be a number, got '${typeof value}'`,
             });
             continue;
           }
@@ -147,9 +196,10 @@ export class ProvidersService {
             isNumber(propertyInfo.minValue) &&
             value < propertyInfo.minValue
           ) {
-            errors.push({
-              property: property,
-              message: `Value must be greater or equal than '${propertyInfo.minValue}'.`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_MINVALUE_ERROR,
+              field,
+              message: `${field} must not be less than ${propertyInfo.minValue}`,
             });
           }
 
@@ -157,9 +207,10 @@ export class ProvidersService {
             isNumber(propertyInfo.maxValue) &&
             value > propertyInfo.maxValue
           ) {
-            errors.push({
-              property,
-              message: `Value must be less or equal than '${propertyInfo.maxValue}'.`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_MAXVALUE_ERROR,
+              field,
+              message: `${field} must not be greater than ${propertyInfo.minValue}`,
             });
           }
 
@@ -167,9 +218,10 @@ export class ProvidersService {
 
         case PropertyType.BOOLEAN:
           if (!isBoolean(value)) {
-            errors.push({
-              property,
-              message: `Expected Boolean, got '${typeof value}'`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_TYPE_MISMATCH,
+              field,
+              message: `${field} must be a boolean, got '${typeof value}'`,
             });
             continue;
           }
@@ -178,9 +230,10 @@ export class ProvidersService {
 
         default:
           if (!isString(value)) {
-            errors.push({
-              property,
-              message: `Expected String, got '${typeof value}'`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_TYPE_MISMATCH,
+              field,
+              message: `${field} must be a string, got '${typeof value}'`,
             });
             continue;
           }
@@ -189,9 +242,10 @@ export class ProvidersService {
             isNumber(propertyInfo.minLength) &&
             value.length < propertyInfo.minLength
           ) {
-            errors.push({
-              property: property,
-              message: `Length must be greater or equal than '${propertyInfo.minLength}'.`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_MINLENGTH_ERROR,
+              field,
+              message: `${field} must be longer than or equal to ${propertyInfo.minLength} characters`,
             });
           }
 
@@ -199,12 +253,23 @@ export class ProvidersService {
             isNumber(propertyInfo.maxLength) &&
             value.length > propertyInfo.maxLength
           ) {
-            errors.push({
-              property,
-              message: `Length must be less or equal than '${propertyInfo.maxLength}'.`,
+            apiError.details.push({
+              code: ErrorCode.PROPERTY_MAXLENGTH_ERROR,
+              field,
+              message: `${field} must be shorter  than or equal to ${propertyInfo.minLength} characters`,
             });
           }
       }
+    }
+
+    if (apiError.details.length > 0) {
+      for (const detail of apiError.details) {
+        if (detail.field) {
+          detail.field = `properies.${detail.field}`;
+        }
+      }
+
+      throw new BadRequestException(apiError);
     }
   }
 }

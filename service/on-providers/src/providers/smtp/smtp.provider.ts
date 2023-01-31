@@ -9,7 +9,7 @@ export class SmtpProvider extends NodemailerProvider {
     return {
       displayName: 'SMTP',
       description: {
-        en: 'Send Emails using any SMPT email server',
+        en: 'Send Emails using any SMTP email server',
       },
       type: ProviderType.EMAIL,
       logoSvg:

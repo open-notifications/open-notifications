@@ -22,7 +22,14 @@ export enum ProviderType {
 }
 
 export enum ErrorCode {
-  VALIDATION_ERROR = 'validation',
+  PROPERTY_MAXLENGTH_ERROR = 'property_maxlength_error',
+  PROPERTY_MAXVALUE_ERROR = 'property_maxvalue_error',
+  PROPERTY_MINLENGTH_ERROR = 'property_minlength_error',
+  PROPERTY_MINVALUE_ERROR = 'property_minvalue_error',
+  PROPERTY_NOT_DEFINED = 'property_not_defined',
+  PROPERTY_NOT_KNOWN = 'property_not_known',
+  PROPERTY_TYPE_MISMATCH = 'property_type_mismatch',
+  VALIDATION_ERROR = 'validation_error',
 }
 
 export enum HttpMethod {
@@ -53,6 +60,7 @@ export enum NotificationStatus {
 export class RequestContextDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   hostUrl: string;
 
   @ApiProperty({ additionalProperties: { type: 'string' } })
@@ -62,19 +70,23 @@ export class RequestContextDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsBoolean()
   trusted?: boolean;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   tennantId: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   userId: string;
 }
 
 export class BaseRequestDto {
   @ApiProperty()
+  @IsObject()
   @IsDefined()
   context: RequestContextDto;
 }
@@ -86,6 +98,7 @@ export class GetProvidersRequestDto extends BaseRequestDto {
 export class DeprecatedDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   reason: string;
 }
 
@@ -145,10 +158,12 @@ export class PropertyInfoDto {
 
   @ApiProperty({ nullable: true })
   @IsOptional()
+  @IsArray()
   allowedValues?: any[];
 
   @ApiProperty({ nullable: true })
   @IsOptional()
+  @IsObject()
   isDeprecated?: DeprecatedDto;
 }
 
@@ -156,21 +171,19 @@ export class PropertyInfoDto {
 export class ProviderInfoDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   displayName: string;
 
   @ApiProperty({
     additionalProperties: { type: 'string' },
   })
   @IsNotEmpty()
+  @IsObject()
   description: LocalizedString;
 
   @ApiProperty({ nullable: true })
-  @IsObject()
+  @IsString()
   logoSvg?: string;
-
-  @ApiProperty({ nullable: true })
-  @IsObject()
-  logoRaster?: string;
 
   @ApiProperty({
     enum: ProviderType,
@@ -209,6 +222,7 @@ export class GetProvidersResponseDto {
 export class InstallationRequestDto extends BaseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   provider: string;
 
   @ApiProperty({ additionalProperties: { nullable: true } })
@@ -217,12 +231,14 @@ export class InstallationRequestDto extends BaseRequestDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   webhookUrl: string;
 }
 
 export class UserDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   id: string;
 
   @ApiProperty({ additionalProperties: { nullable: true } })
@@ -233,6 +249,7 @@ export class UserDto {
 export class SendRequestDto extends BaseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   provider: string;
 
   @ApiProperty({ additionalProperties: { nullable: true } })
@@ -245,40 +262,43 @@ export class SendRequestDto extends BaseRequestDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  notificationId: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
+  @IsString()
   trackingToken: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   trackingWebhookUrl: string;
 }
 
 export class EmailPayloadDto {
   @ApiProperty()
-  @IsArray()
+  @IsString()
   to: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   subject: string;
 
   @ApiProperty({ nullable: true })
   @IsDefined()
+  @IsString()
   fromEmail?: string;
 
   @ApiProperty()
   @IsOptional()
+  @IsString()
   fromName?: string;
 
   @ApiProperty({ nullable: true })
   @IsOptional()
+  @IsString()
   bodyText?: string;
 
   @ApiProperty({ nullable: true })
   @IsOptional()
+  @IsString()
   bodyHtml?: string;
 }
 
@@ -292,10 +312,12 @@ export class SendEmailRequestDto extends SendRequestDto {
 export class SmsPayloadDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   to: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   body: string;
 }
 
@@ -309,6 +331,7 @@ export class SendSmsRequestDto extends SendRequestDto {
 export class WebhookRequestDto extends BaseRequestDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   provider: string;
 
   @ApiProperty({ additionalProperties: { nullable: true } })
@@ -345,7 +368,7 @@ export class ErrorDto {
   })
   @IsDefined()
   @IsEnum(ErrorCode)
-  code: ErrorCode;
+  code?: ErrorCode;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -353,6 +376,8 @@ export class ErrorDto {
   message: string;
 
   @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsString()
   field?: string;
 }
 
@@ -362,7 +387,23 @@ export class ApiErrorDto {
     items: { $ref: getSchemaPath(ErrorDto) },
   })
   @IsOptional()
-  errors: ErrorDto[];
+  @IsArray()
+  details?: ErrorDto[];
+
+  @ApiProperty({
+    enum: ErrorCode,
+  })
+  @IsDefined()
+  @IsEnum(ErrorCode)
+  code?: ErrorCode;
+
+  @ApiProperty()
+  @IsString()
+  message: string;
+
+  @ApiProperty()
+  @IsNumber()
+  statusCode: number;
 }
 
 @ApiExtraModels(ErrorDto)
@@ -375,6 +416,7 @@ export class NotificationStatusDto {
   @ApiProperty({ required: true })
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   trackingToken: string;
 
   @ApiProperty({
@@ -383,6 +425,7 @@ export class NotificationStatusDto {
     nullable: true,
   })
   @IsOptional()
+  @IsArray()
   errors?: ErrorDto[];
 
   static status(status: NotificationStatus, trackingToken: string) {
