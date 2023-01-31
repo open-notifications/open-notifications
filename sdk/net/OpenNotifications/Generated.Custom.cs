@@ -17,7 +17,37 @@ public partial class ApiErrorDto
     /// <inheritdoc />
     public override string ToString()
     {
-        return string.Join("; ", Errors);
+        var sb = new StringBuilder();
+
+        if (Code != default)
+        {
+            sb.Append(Code.ToString());
+        }
+
+        var message = Message?.Trim();
+
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            sb.Append(", ");
+            sb.Append(message);
+        }
+
+        if (sb.Length > 0)
+        {
+            sb.AppendLine();
+        }
+
+        if (Details != null)
+        {
+            foreach (var detail in Details)
+            {
+                sb.Append(" * ");
+                detail.ToString(sb);
+                sb.AppendLine();
+            }
+        }
+
+        return sb.ToString();
     }
 }
 
@@ -28,7 +58,17 @@ public partial class ErrorDto
     {
         var sb = new StringBuilder();
 
-        sb.Append(Code.ToString());
+        ToString(sb);
+
+        return sb.ToString();
+    }
+
+    internal void ToString(StringBuilder sb)
+    {
+        if (Code != default)
+        {
+            sb.Append(Code.ToString());
+        }
 
         var message = Message?.Trim();
 
@@ -46,8 +86,6 @@ public partial class ErrorDto
             sb.Append("Field: ");
             sb.Append(field);
         }
-
-        return sb.ToString();
     }
 }
 
