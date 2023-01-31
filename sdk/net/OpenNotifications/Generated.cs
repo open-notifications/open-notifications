@@ -772,9 +772,6 @@ namespace OpenNotifications
         [Newtonsoft.Json.JsonProperty("logoSvg", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string? LogoSvg { get; set; } = default!;
 
-        [Newtonsoft.Json.JsonProperty("logoRaster", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string? LogoRaster { get; set; } = default!;
-
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -826,9 +823,21 @@ namespace OpenNotifications
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.17.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v9.0.0.0))")]
     public partial class ApiErrorDto
     {
-        [Newtonsoft.Json.JsonProperty("errors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required]
-        public System.Collections.Generic.List<ErrorDto> Errors { get; set; } = new System.Collections.Generic.List<ErrorDto>();
+        public System.Collections.Generic.List<ErrorDto> Details { get; set; } = new System.Collections.Generic.List<ErrorDto>();
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ApiErrorDtoCode Code { get; set; } = default!;
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Message { get; set; } = default!;
+
+        [Newtonsoft.Json.JsonProperty("statusCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double StatusCode { get; set; } = default!;
 
     }
 
@@ -889,10 +898,6 @@ namespace OpenNotifications
         [Newtonsoft.Json.JsonProperty("user", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required]
         public UserDto User { get; set; } = new UserDto();
-
-        [Newtonsoft.Json.JsonProperty("notificationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string NotificationId { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("trackingToken", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -973,10 +978,6 @@ namespace OpenNotifications
         [Newtonsoft.Json.JsonProperty("user", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required]
         public UserDto User { get; set; } = new UserDto();
-
-        [Newtonsoft.Json.JsonProperty("notificationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string NotificationId { get; set; } = default!;
 
         [Newtonsoft.Json.JsonProperty("trackingToken", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -1082,11 +1083,62 @@ namespace OpenNotifications
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.17.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v9.0.0.0))")]
+    public enum ApiErrorDtoCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_maxlength_error")]
+        Property_maxlength_error = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_maxvalue_error")]
+        Property_maxvalue_error = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_minlength_error")]
+        Property_minlength_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_minvalue_error")]
+        Property_minvalue_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_not_defined")]
+        Property_not_defined = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_not_known")]
+        Property_not_known = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_type_mismatch")]
+        Property_type_mismatch = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 7,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.17.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v9.0.0.0))")]
     public enum ErrorDtoCode
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"validation")]
-        Validation = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"property_maxlength_error")]
+        Property_maxlength_error = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_maxvalue_error")]
+        Property_maxvalue_error = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_minlength_error")]
+        Property_minlength_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_minvalue_error")]
+        Property_minvalue_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_not_defined")]
+        Property_not_defined = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_not_known")]
+        Property_not_known = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"property_type_mismatch")]
+        Property_type_mismatch = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 7,
 
     }
 

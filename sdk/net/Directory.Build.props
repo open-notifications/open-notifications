@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://gibt.com/open-notifications/open-notifications</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Version>0.1.9</Version>
+    <Version>0.1.10</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
