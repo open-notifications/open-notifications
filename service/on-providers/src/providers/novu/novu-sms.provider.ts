@@ -4,6 +4,7 @@ import {
   ISmsProvider,
   SmsEventStatusEnum,
 } from '@novu/stateless';
+import { IsArray } from 'class-validator';
 import {
   NotificationStatusDto,
   SendSmsRequestDto,
@@ -26,9 +27,9 @@ export class NovuSmsProvider extends NovuProviderBase {
     const provider = this.factory(request.properties);
 
     await provider.sendMessage({
+      id: request.trackingToken,
       to: request.payload.to,
       content: request.payload.body,
-      id: request.trackingToken,
     });
 
     return NotificationStatusDto.status(
@@ -42,24 +43,31 @@ export class NovuSmsProvider extends NovuProviderBase {
   ): Promise<WebhookResponseDto> {
     const provider = this.factory(request.properties);
 
-    if (!provider.parseEventBody) {
+    if (!provider.parseEventBody || !provider.getMessageId) {
       return {};
     }
 
-    const parsed = provider.parseEventBody(
-      JSON.parse(request.body),
-      request.trackingToken,
-    );
+    const parsedBody = JSON.parse(request.body);
 
-    return {
-      status: NotificationStatusDto.status(
-        parseStatus(parsed),
-        request.trackingToken,
-      ),
-      http: {
-        body: parsed.response,
-      },
-    };
+    let ids = provider.getMessageId(parsedBody);
+    if (!Array.isArray(ids)) {
+      ids = [ids];
+    }
+
+    const statuses: NotificationStatusDto[] = [];
+
+    for (const id of ids) {
+      const parsed = provider.parseEventBody(parsedBody, id);
+
+      statuses.push(
+        NotificationStatusDto.status(
+          parseStatus(parsed),
+          request.trackingToken,
+        ),
+      );
+    }
+
+    return { statuses };
   }
 }
 

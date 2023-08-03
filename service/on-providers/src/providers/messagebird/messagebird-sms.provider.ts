@@ -81,25 +81,21 @@ export class MessageBirdSmsProvider implements IntegrationProvider {
   }
 
   async handleWebhook(request: WebhookRequestDto) {
-    const response = new WebhookResponseDto();
-
     const status = request.query['status']?.[0];
-
     if (!status) {
-      return response;
+      return {};
     }
 
     const reference = request.query['reference']?.[0];
-
     if (!reference) {
-      return response;
+      return {};
     }
 
-    response.status = NotificationStatusDto.status(
-      parseStatus(status),
-      reference,
-    );
-    return response;
+    const statuses = [
+      NotificationStatusDto.status(parseStatus(status), reference),
+    ];
+
+    return { statuses };
   }
 }
 

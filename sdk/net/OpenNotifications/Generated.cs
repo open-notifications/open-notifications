@@ -1134,8 +1134,8 @@ namespace OpenNotifications
         [Newtonsoft.Json.JsonProperty("http", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public WebhookHttpResponseDto? Http { get; set; } = default!;
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public NotificationStatusDto? Status { get; set; } = default!;
+        [Newtonsoft.Json.JsonProperty("statuses", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<NotificationStatusDto>? Statuses { get; set; } = default!;
 
     }
 

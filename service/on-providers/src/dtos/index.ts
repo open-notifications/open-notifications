@@ -484,13 +484,19 @@ export class WebhookHttpResponseDto {
 }
 
 export class WebhookResponseDto {
-  @ApiProperty({ nullable: true })
+  @ApiProperty({
+    nullable: true,
+  })
   @IsOptional()
   @IsObject()
   http?: WebhookHttpResponseDto;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({
+    nullable: true,
+    type: 'array',
+    items: { $ref: getSchemaPath(NotificationStatusDto) },
+  })
   @IsOptional()
   @IsObject()
-  status?: NotificationStatusDto;
+  statuses?: NotificationStatusDto[];
 }

@@ -4,7 +4,6 @@ import {
   SendEmailRequestDto,
   NotificationStatusDto,
   WebhookRequestDto,
-  WebhookResponseDto,
   ProviderType,
   PropertyType,
   NotificationStatus,
@@ -197,10 +196,7 @@ export class MailjetApiProvider implements IntegrationProvider {
     status.detail = detail;
     status.trackingToken = parsed.CustomID;
 
-    const result = new WebhookResponseDto();
-    result.status = status;
-
-    return result;
+    return { statuses: [status] };
   }
 
   private getStatus(event: string): [NotificationStatus, string | undefined] {

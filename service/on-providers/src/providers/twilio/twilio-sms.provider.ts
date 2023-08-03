@@ -99,31 +99,27 @@ export class TwilioSmsProvider implements IntegrationProvider {
   }
 
   async handleWebhook(request: WebhookRequestDto) {
-    const response = new WebhookResponseDto();
-
     if (!request.body) {
-      return response;
+      return {};
     }
 
     const form = querystring.parse(request.body);
 
     const status = form['MessageStatus'];
-
     if (!status) {
-      return response;
+      return {};
     }
 
     const token = request.query['token']?.[0];
-
     if (!token) {
-      return response;
+      return {};
     }
 
-    response.status = NotificationStatusDto.status(
-      parseStatus(status as any),
-      token,
-    );
-    return response;
+    const statuses = [
+      NotificationStatusDto.status(parseStatus(status as any), token),
+    ];
+
+    return { statuses };
   }
 }
 
