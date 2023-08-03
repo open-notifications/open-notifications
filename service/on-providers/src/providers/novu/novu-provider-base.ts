@@ -62,6 +62,7 @@ export abstract class NovuProviderBase implements IntegrationProvider {
         process.cwd(),
         'assets',
         'novu',
+        'square',
         `${providerConfig.id}.${extension}`,
       );
 
