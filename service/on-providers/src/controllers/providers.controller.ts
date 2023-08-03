@@ -1,12 +1,23 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Param,
+  Post,
+  Res,
+  StreamableFile,
+} from '@nestjs/common';
 import {
   ApiErrorDto,
   GetProvidersRequestDto,
   GetProvidersResponseDto,
   InstallationRequestDto,
 } from 'src/dtos';
-import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiParam, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ProvidersService } from 'src/services/providers.service';
+import type { Response } from 'express';
 
 @Controller('providers')
 @ApiTags('providers')
@@ -49,5 +60,42 @@ export class ProvidersController {
   @HttpCode(204)
   uninstall(@Body() request: InstallationRequestDto) {
     return this.providers.uninstall(request);
+  }
+
+  @Get('image/:providerId')
+  @ApiOperation({ summary: 'Return the image for a provider.' })
+  @ApiParam({
+    name: 'providerId',
+    type: 'string',
+    description: 'The ID of the provider',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Provider image returned.',
+    schema: {
+      type: 'string',
+      format: 'binary',
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Provider or image not found.',
+  })
+  @HttpCode(200)
+  async downloadImage(
+    @Param('providerId') providerId: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = await this.providers.image(providerId);
+
+    if (result) {
+      response.set({
+        'Content-Type': result.contentType,
+      });
+
+      return new StreamableFile(result.file);
+    }
+
+    throw new NotFoundException('Provider does not return an image.');
   }
 }

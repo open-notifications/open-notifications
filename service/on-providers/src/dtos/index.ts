@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  isDefined,
   IsDefined,
   IsEnum,
   IsNotEmpty,
@@ -334,6 +335,11 @@ export class WebhookRequestDto extends BaseRequestDto {
   @IsString()
   provider: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  trackingToken: string;
+
   @ApiProperty({ additionalProperties: { nullable: true } })
   @IsObject()
   properties: PropertyValues;
@@ -398,10 +404,12 @@ export class ApiErrorDto {
   code?: ErrorCode;
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   message: string;
 
   @ApiProperty()
+  @IsDefined()
   @IsNumber()
   statusCode: number;
 }
@@ -428,10 +436,20 @@ export class NotificationStatusDto {
   @IsArray()
   errors?: ErrorDto[];
 
-  static status(status: NotificationStatus, trackingToken: string) {
+  @ApiProperty({ nullable: true })
+  @IsOptional()
+  @IsString()
+  detail?: string;
+
+  static status(
+    status: NotificationStatus,
+    trackingToken: string,
+    detail?: string,
+  ) {
     const result = new NotificationStatusDto();
     result.status = status;
     result.trackingToken = trackingToken;
+    result.detail = detail;
 
     return result;
   }

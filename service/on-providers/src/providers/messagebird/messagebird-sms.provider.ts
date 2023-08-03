@@ -8,10 +8,10 @@ import {
   WebhookResponseDto,
   NotificationStatusDto,
 } from 'src/dtos';
-import { Provider } from '../interface';
+import { IntegrationProvider } from '../interface';
 import initMB, { Message, MessageBird, MessageParameters } from 'messagebird';
 
-export class MessageBirdSmsProvider implements Provider {
+export class MessageBirdSmsProvider implements IntegrationProvider {
   private readonly spec: ProviderInfoDto = {
     displayName: 'Messagebird',
     description: {

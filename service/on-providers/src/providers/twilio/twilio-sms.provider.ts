@@ -9,12 +9,12 @@ import {
   NotificationStatusDto,
 } from 'src/dtos';
 import querystring from 'node:querystring';
-import { Provider } from '../interface';
+import { IntegrationProvider } from '../interface';
 import * as twilio from 'twilio';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import { appendQuery } from '../utils';
 
-export class TwilioSmsProvider implements Provider {
+export class TwilioSmsProvider implements IntegrationProvider {
   name = 'twilio-sms';
 
   spec: ProviderInfoDto = {

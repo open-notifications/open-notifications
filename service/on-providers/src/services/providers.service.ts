@@ -20,14 +20,14 @@ import {
   SendSmsRequestDto,
   WebhookRequestDto,
 } from './../dtos';
-import { Provider, Providers } from './../providers';
+import { IntegrationProvider, Providers } from './../providers';
 
 @Injectable()
 export class ProvidersService {
   private readonly logger = new Logger(ProvidersService.name);
-  private readonly providerMap: { [name: string]: Provider } = {};
+  private readonly providerMap: { [name: string]: IntegrationProvider } = {};
 
-  constructor(@Inject(Providers.provide) providers: Provider[]) {
+  constructor(@Inject(Providers.provide) providers: IntegrationProvider[]) {
     for (const provider of providers) {
       this.providerMap[provider.name] = provider;
     }
@@ -69,6 +69,16 @@ export class ProvidersService {
     if (provider.uninstall) {
       await provider.uninstall(request);
     }
+  }
+
+  async image(providerId: string) {
+    const provider = this.getProvider(providerId);
+
+    if (provider.image) {
+      return await provider.image();
+    }
+
+    return null;
   }
 
   async handleWebhook(request: WebhookRequestDto) {
@@ -131,7 +141,7 @@ export class ProvidersService {
 
   private validateProvider(
     context: RequestContextDto,
-    provider: Provider,
+    provider: IntegrationProvider,
     type: ProviderType,
   ) {
     const spec = provider.getSpec(context);
@@ -146,7 +156,7 @@ export class ProvidersService {
 
   private validateProperties(
     context: RequestContextDto,
-    provider: Provider,
+    provider: IntegrationProvider,
     properties: PropertyValues,
   ) {
     const spec = provider.getSpec(context);

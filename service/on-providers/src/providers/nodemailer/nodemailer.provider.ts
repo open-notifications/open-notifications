@@ -7,11 +7,11 @@ import {
   PropertyType,
   NotificationStatusDto,
 } from 'src/dtos';
-import { Provider } from '../interface';
+import { IntegrationProvider } from '../interface';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-export abstract class NodemailerProvider implements Provider {
+export abstract class NodemailerProvider implements IntegrationProvider {
   private spec: ProviderInfoDto;
 
   abstract get name(): string;
@@ -91,7 +91,7 @@ export abstract class NodemailerProvider implements Provider {
     try {
       const info = await transport.sendMail({
         from: {
-          name: payload.fromName || fromName,
+          name: payload.fromName || fromName || fromEmail,
           address: payload.fromEmail || fromEmail,
         },
         to,

@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import {
   InstallationRequestDto,
   NotificationStatusDto,
@@ -9,7 +10,7 @@ import {
   WebhookResponseDto,
 } from './../dtos';
 
-export interface Provider {
+export interface IntegrationProvider {
   name: string;
 
   getSpec(context: RequestContextDto): ProviderInfoDto;
@@ -23,4 +24,6 @@ export interface Provider {
   sendSms?(request: SendSmsRequestDto): Promise<NotificationStatusDto>;
 
   handleWebhook?(request: WebhookRequestDto): Promise<WebhookResponseDto>;
+
+  image?(): Promise<{ file: Readable; contentType: string } | null>;
 }
