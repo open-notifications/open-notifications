@@ -4,7 +4,6 @@ import {
   ISmsProvider,
   SmsEventStatusEnum,
 } from '@novu/stateless';
-import { IsArray } from 'class-validator';
 import {
   NotificationStatusDto,
   SendSmsRequestDto,
