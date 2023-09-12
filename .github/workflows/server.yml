@@ -31,7 +31,14 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: service/on-providers
-          tags: on-local      
+          tags: on-local
+
+      - name: Publish - Calculate Version
+        if: github.event_name != 'pull_request'
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          echo "BUILD_NUMBER=$(($BUILD_NUMBER))" >> $GITHUB_ENV
 
       - name: Publish - Login to Docker Hub
         if: github.event_name != 'pull_request'
