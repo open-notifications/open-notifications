@@ -5,11 +5,15 @@ import {
   PropertyType,
   NotificationStatus,
   WebhookRequestDto,
-  WebhookResponseDto,
   NotificationStatusDto,
 } from 'src/dtos';
 import { IntegrationProvider } from '../interface';
-import initMB, { Message, MessageBird, MessageParameters } from 'messagebird';
+import {
+  initClient,
+  Message,
+  MessageBird,
+  MessageParameters,
+} from 'messagebird';
 
 export class MessageBirdSmsProvider implements IntegrationProvider {
   private readonly spec: ProviderInfoDto = {
@@ -62,7 +66,7 @@ export class MessageBirdSmsProvider implements IntegrationProvider {
 
     const { to, body } = request.payload;
 
-    const messagebird = initMB(accessKey);
+    const messagebird = initClient(accessKey);
 
     const result = await sendAsync(messagebird, {
       originator,
