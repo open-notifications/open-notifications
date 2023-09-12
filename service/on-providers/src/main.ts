@@ -72,6 +72,7 @@ async function bootstrap() {
     }),
   );
 
+  console.log('Listening to port 4500');
   await app.listen(4500);
 }
 bootstrap();
