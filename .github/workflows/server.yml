@@ -28,7 +28,7 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          file: service/on-providers/Dockerfile
+          context: service/on-providers
           tags: on-local      
 
       - name: Publish - Login to Docker Hub
