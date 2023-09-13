@@ -11,6 +11,7 @@ import {
   SendEmailRequestDto,
   WebhookRequestDto,
   WebhookResponseDto,
+  ProviderType,
 } from 'src/dtos';
 import { NovuProviderBase } from './novu-provider-base';
 
@@ -20,7 +21,7 @@ export class NovuEmailProvider extends NovuProviderBase {
     providerConfig: IProviderConfig,
     providerLogo?: string,
   ) {
-    super('novu_email', providerConfig, providerLogo);
+    super(ProviderType.EMAIL, 'novu_email', providerConfig, providerLogo);
   }
 
   async sendEmail?(

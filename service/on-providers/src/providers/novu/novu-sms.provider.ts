@@ -10,6 +10,7 @@ import {
   WebhookRequestDto,
   WebhookResponseDto,
   NotificationStatus,
+  ProviderType,
 } from 'src/dtos';
 import { NovuProviderBase } from './novu-provider-base';
 
@@ -19,7 +20,7 @@ export class NovuSmsProvider extends NovuProviderBase {
     providerConfig: IProviderConfig,
     providerLogo?: string,
   ) {
-    super('novu_email', providerConfig, providerLogo);
+    super(ProviderType.SMS, 'novu_email', providerConfig, providerLogo);
   }
 
   async sendSms?(request: SendSmsRequestDto): Promise<NotificationStatusDto> {

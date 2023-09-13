@@ -20,6 +20,7 @@ export abstract class NovuProviderBase implements IntegrationProvider {
   readonly spec: ProviderInfoDto;
 
   constructor(
+    type: ProviderType,
     prefix: string,
     providerConfig: IProviderConfig,
     providerLogo?: string,
@@ -30,7 +31,7 @@ export abstract class NovuProviderBase implements IntegrationProvider {
       displayName: providerConfig.displayName,
       description: {},
       properties: {},
-      type: ProviderType.SMS,
+      type,
       logoSvg: providerLogo,
     };
 
