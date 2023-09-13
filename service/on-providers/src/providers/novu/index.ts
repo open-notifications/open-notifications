@@ -29,6 +29,8 @@ import { MailersendEmailProvider } from '@novu/mailersend';
 import { Outlook365Provider } from '@novu/outlook365';
 import { ResendEmailProvider } from '@novu/resend';
 import { SparkPostEmailProvider } from '@novu/sparkpost';
+import { GupshupSmsProvider } from '@novu/gupshup';
+import { FiretextSmsProvider } from '@novu/firetext';
 
 // From https://github.com/novuhq/novu/blob/main/libs/shared/src/consts/providers/channels/sms.ts
 export const NOVU_SMS_PROVIDERS = [
@@ -52,17 +54,14 @@ export const NOVU_SMS_PROVIDERS = [
     (c) => new TelnyxSmsProvider(c),
     smsProviders.find((x) => x.id === SmsProviderIdEnum.Telnyx),
   ),
-  /*
   new NovuSmsProvider(
     (c) => new GupshupSmsProvider(c),
     smsProviders.find((x) => x.id === SmsProviderIdEnum.Gupshup),
   ),
-  /*
   new NovuSmsProvider(
     (c) => new FiretextSmsProvider(c),
     smsProviders.find((x) => x.id === SmsProviderIdEnum.Firetext),
   ),
-  */
   new NovuSmsProvider(
     (c) => new InfobipSmsProvider(c),
     smsProviders.find((x) => x.id === SmsProviderIdEnum.Infobip),
