@@ -63,7 +63,9 @@ export abstract class NovuProviderBase implements IntegrationProvider {
 
     for (const [extension, mimeType] of Object.entries(Extensions)) {
       const path = join(
-        process.cwd(),
+        __dirname,
+        '..',
+        '..',
         'assets',
         'novu',
         'square',
