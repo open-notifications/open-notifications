@@ -30,7 +30,9 @@ export abstract class NovuProviderBase implements IntegrationProvider {
 
     this.spec = {
       displayName: providerConfig.displayName,
-      description: {},
+      description: {
+        en: description,
+      },
       properties: {},
       type,
       logoSvg: providerLogo,
