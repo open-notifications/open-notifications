@@ -19,7 +19,7 @@ export class MessageBirdSmsProvider implements IntegrationProvider {
   private readonly spec: ProviderInfoDto = {
     displayName: 'Messagebird',
     description: {
-      en: 'Send SMS over Messagebird',
+      en: 'Send SMS over Messagebird.',
     },
     type: ProviderType.SMS,
     logoSvg:

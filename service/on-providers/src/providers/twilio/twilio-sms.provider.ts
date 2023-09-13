@@ -20,7 +20,7 @@ export class TwilioSmsProvider implements IntegrationProvider {
   spec: ProviderInfoDto = {
     displayName: 'Twilio',
     description: {
-      en: 'Send SMS over Twilio',
+      en: 'Send SMS over Twilio.',
     },
     type: ProviderType.SMS,
     logoSvg:

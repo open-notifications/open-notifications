@@ -10,7 +10,7 @@ export class AwsEmailProvider extends NodemailerProvider {
     return {
       displayName: 'AWS SES',
       description: {
-        en: 'AWE Simple Email Service',
+        en: 'AWS Simple Email Service (SES). Probably the cheapest option for sending Emails.',
       },
       type: ProviderType.EMAIL,
       logoSvg:

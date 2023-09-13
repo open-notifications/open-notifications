@@ -24,7 +24,7 @@ export class NovuEmailProvider extends NovuProviderBase {
     super(
       ProviderType.EMAIL,
       'novu_email',
-      `Send Email over ${providerConfig.displayName}`,
+      `Send Emails over ${providerConfig.displayName}.`,
       providerConfig,
       providerLogo,
     );

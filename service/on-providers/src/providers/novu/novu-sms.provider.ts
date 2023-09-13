@@ -23,7 +23,7 @@ export class NovuSmsProvider extends NovuProviderBase {
     super(
       ProviderType.SMS,
       'novu_email',
-      `Send SMS over ${providerConfig.displayName}`,
+      `Send SMS over ${providerConfig.displayName}.`,
       providerConfig,
       providerLogo,
     );

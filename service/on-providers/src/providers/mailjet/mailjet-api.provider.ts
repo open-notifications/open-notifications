@@ -20,7 +20,7 @@ export class MailjetApiProvider implements IntegrationProvider {
   spec = {
     displayName: 'Mailjet SMTP',
     description: {
-      en: 'Send Emails using Mailjet API',
+      en: 'Send Emails using Mailjet API.',
     },
     type: ProviderType.EMAIL,
     logoSvg:

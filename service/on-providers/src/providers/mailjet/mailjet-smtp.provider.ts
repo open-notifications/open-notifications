@@ -9,7 +9,7 @@ export class MailjetSMTPProvider extends NodemailerProvider {
     return {
       displayName: 'Mailjet SMTP',
       description: {
-        en: 'Send Emails using Mailjet SMTP Server',
+        en: 'Send Emails using Mailjet SMTP Server.',
       },
       type: ProviderType.EMAIL,
       logoSvg:
