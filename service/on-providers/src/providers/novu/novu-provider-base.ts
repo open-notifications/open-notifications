@@ -22,6 +22,7 @@ export abstract class NovuProviderBase implements IntegrationProvider {
   constructor(
     type: ProviderType,
     prefix: string,
+    description: string,
     providerConfig: IProviderConfig,
     providerLogo?: string,
   ) {

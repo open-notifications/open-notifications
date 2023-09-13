@@ -20,7 +20,13 @@ export class NovuSmsProvider extends NovuProviderBase {
     providerConfig: IProviderConfig,
     providerLogo?: string,
   ) {
-    super(ProviderType.SMS, 'novu_email', providerConfig, providerLogo);
+    super(
+      ProviderType.SMS,
+      'novu_email',
+      `Send SMS over ${providerConfig.displayName}`,
+      providerConfig,
+      providerLogo,
+    );
   }
 
   async sendSms?(request: SendSmsRequestDto): Promise<NotificationStatusDto> {

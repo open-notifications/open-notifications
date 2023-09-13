@@ -21,7 +21,13 @@ export class NovuEmailProvider extends NovuProviderBase {
     providerConfig: IProviderConfig,
     providerLogo?: string,
   ) {
-    super(ProviderType.EMAIL, 'novu_email', providerConfig, providerLogo);
+    super(
+      ProviderType.EMAIL,
+      'novu_email',
+      `Send Email over ${providerConfig.displayName}`,
+      providerConfig,
+      providerLogo,
+    );
   }
 
   async sendEmail?(
